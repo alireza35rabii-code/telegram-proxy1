@@ -1,0 +1,26 @@
+name: Proxy Collector
+on:
+  schedule:
+    - cron: "0 */12 * * *"   # هر 12 ساعت
+  workflow_dispatch:          # اجرا دستی
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install deps
+        run: pip install "requests[socks]"
+
+      - name: Run collector
+        run: python telegram_proxy_collector.py
+        env:
+            BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+            CHAT_ID: ${{ secrets.CHAT_ID }}
